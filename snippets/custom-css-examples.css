@@ -1,0 +1,32 @@
+/* ==========================================================================
+   XX. MEDIA WALL — homepage intro wall
+   ========================================================================== */
+
+/* XX.1 Behaviour — one place for speed, links and the scroll button */
+.mw {
+  --mw-speed: 30;            /* px per second */
+  --mw-video-rate: 1;        /* video playback speed */
+  --mw-links: off;           /* on | off */
+  --mw-scroll-indicator: on; /* on | off */
+  --mw-scroll-label: "Scroll";
+}
+
+/* XX.2 Size and spacing */
+.mw {
+  --mw-height: 100vh;     /* wall height; plugin uses 100svh where supported */
+  --mw-gap: 12px;         /* space between tiles and columns */
+  --mw-padding: 12px;     /* space at the left/right edge */
+  --mw-radius: 0px;       /* tile corners */
+}
+
+/* XX.3 Background (defaults to the site background colour) */
+.mw { --mw-bg: #ece8e1; }
+
+/* XX.4 Optional: soft fade into the background at top and bottom */
+/* .mw { --mw-fade: 80px; } */
+
+/* XX.5 Optional: shorter wall on phones */
+/* @media (max-width: 640px) { .mw { --mw-height: 75vh; } } */
+
+/* XX.6 Optional: scroll button colours */
+/* .mw { --mw-scroll-bg: rgba(236,232,225,.7); --mw-scroll-color: #222; } */

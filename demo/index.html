@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media Wall — Squarespace mock</title>
+<!--
+  Local test page imitating Squarespace 7.1 markup.
+  ?mode=a  → Method A: list section with the anchor media-wall
+  default  → Method B: code block reading the list + a video section below
+  ?header=fixed → imitate a "fixed position" site header
+  ?links=1 → links on    ?cssspeed=60 → speed + video rate set in Custom CSS
+-->
+<style>
+  body { margin: 0; font-family: Georgia, serif; background: #ece8e1; color: #222; }
+  #header { background: #ece8e1; border-bottom: 1px solid #d5cfc4; z-index: 10; width: 100%; }
+  .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; }
+  .header-nav a { margin-left: 24px; color: #222; text-decoration: none; font-size: 14px; }
+  .header-nav a.btn { background: #a8816a; color: #fff; padding: 8px 14px; }
+  body.fixed-header #header { position: fixed; top: 0; }
+  body.fixed-header #page { padding-top: 66px; }
+  .page-section { padding: 64px 24px; }
+  .content-wrapper { max-width: 1200px; margin: 0 auto; }
+  .hero .content { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; min-height: 70vh; }
+  .hero h1 { font-size: 56px; font-weight: 400; margin: 0 0 16px; }
+  .hero img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+  .user-items-list-simple { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; list-style: none; padding: 0; }
+  .user-items-list-simple__media img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+  .list-item-content__title { font-size: 16px; }
+  .fluid-engine { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .sqs-block video { width: 100%; display: block; }
+  .tall { height: 120vh; background: #ddd6cb; }
+</style>
+<link rel="stylesheet" href="../src/media-wall.css">
+</head>
+<body>
+<div id="siteWrapper">
+  <header id="header" class="header">
+    <div class="header-inner">
+      <div class="header-title">rmg</div>
+      <nav class="header-nav"><a href="#">Case Studies</a><a href="#">Services</a><a href="#">About</a><a class="btn" href="#">Start a Project</a></nav>
+    </div>
+  </header>
+  <main id="page">
+    <article class="sections">
+
+      <!-- Method B only: blank section with the code block -->
+      <section class="page-section mode-b" data-section-id="code">
+        <div class="content-wrapper"><div class="content">
+          <div class="sqs-block code-block sqs-block-code"><div class="sqs-block-content">
+            <div data-media-wall data-sections="2" hidden></div>
+          </div></div>
+        </div></div>
+      </section>
+
+      <!-- Auto Layout list (Simple). Anchor media-wall is added in mode A -->
+      <section class="page-section user-items-list-section" data-section-id="list">
+        <div class="content-wrapper"><div class="content">
+          <div class="user-items-list"><ul class="user-items-list-simple">
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile1.jpg" data-image="media/tile1.jpg" data-image-dimensions="900x1125" data-image-focal-point="0.5,0.5" alt="Project 1"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 1</h2><div class="list-item-content__button-container"><a class="list-item-content__button" href="/work/project-1">View</a></div></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile2.jpg" data-image="media/tile2.jpg" data-image-dimensions="900x900" data-image-focal-point="0.5,0.5" alt="Project 2"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 2</h2><div class="list-item-content__description"><p>link: /work/project-2</p></div></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile3.jpg" data-image="media/tile3.jpg" data-image-dimensions="900x1200" data-image-focal-point="0.5,0.5" alt="Project 3"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 3</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile4.jpg" data-image="media/tile4.jpg" data-image-dimensions="900x506" data-image-focal-point="0.5,0.5" alt="Project 4"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 4</h2><div class="list-item-content__description"><p>video: media/clip.mp4</p></div></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile5.jpg" data-image="media/tile5.jpg" data-image-dimensions="900x1350" data-image-focal-point="0.5,0.5" alt="Project 5"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 5</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile6.jpg" data-image="media/tile6.jpg" data-image-dimensions="900x1125" data-image-focal-point="0.5,0.5" alt="Project 6"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 6</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile7.jpg" data-image="media/tile7.jpg" data-image-dimensions="900x900" data-image-focal-point="0.5,0.5" alt="Project 7"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 7</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile8.jpg" data-image="media/tile8.jpg" data-image-dimensions="900x600" data-image-focal-point="0.5,0.5" alt="Project 8"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 8</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile9.jpg" data-image="media/tile9.jpg" data-image-dimensions="900x1600" data-image-focal-point="0.5,0.5" alt="Project 9"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 9</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile10.jpg" data-image="media/tile10.jpg" data-image-dimensions="900x1125" data-image-focal-point="0.5,0.5" alt="Project 10"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Project 10</h2></div>
+            </li>
+            <li class="user-items-list-simple__item list-item">
+              <div class="user-items-list-simple__media"><img data-src="media/tile11.jpg" data-image-dimensions="900x720" alt="Reel"></div>
+              <div class="list-item-content"><h2 class="list-item-content__title">Reel</h2>
+              <div class="list-item-content__button-container"><a class="list-item-content__button" href="media/clip-vertical.mp4">Watch</a></div></div>
+            </li>
+          </ul></div>
+        </div></div>
+      </section>
+
+      <!-- Method B only: blank section with a video in a code block + an image block -->
+      <section class="page-section mode-b" data-section-id="videos">
+        <div class="content-wrapper"><div class="content fluid-engine">
+          <div class="sqs-block code-block sqs-block-code"><div class="sqs-block-content">
+            <video src="media/clip-vertical.mp4" muted loop playsinline></video>
+          </div></div>
+          <div class="sqs-block image-block sqs-block-image"><div class="sqs-block-content">
+            <img data-src="media/tile12.jpg" data-image-dimensions="900x1350" alt="Tile 12">
+          </div></div>
+        </div></div>
+      </section>
+
+      <!-- Hero -->
+      <section class="page-section hero" data-section-id="hero">
+        <div class="content-wrapper"><div class="content">
+          <div><h1>Growth, Refined.</h1><p>A full-service brand marketing and creative partner.</p></div>
+          <img src="media/tile6.jpg" alt="">
+        </div></div>
+      </section>
+      <section class="page-section tall"><div class="content-wrapper"><h2>Our Work</h2></div></section>
+    </article>
+  </main>
+</div>
+<script>
+  var q = new URLSearchParams(location.search);
+  if (q.get('header') === 'fixed') document.body.classList.add('fixed-header');
+  if (q.get('links')) window.MediaWallConfig = { links: true };
+  if (q.get('cssspeed')) document.head.insertAdjacentHTML('beforeend', '<style>.mw{--mw-speed:' + q.get('cssspeed') + ';--mw-video-rate:0.5;}</style>');
+  if (q.get('mode') === 'a') {
+    document.querySelectorAll('.mode-b').forEach(function (n) { n.remove(); });
+    document.querySelector('[data-section-id="list"]').id = 'media-wall';
+  }
+</script>
+<script defer src="../src/media-wall.js"></script>
+</body>
+</html>

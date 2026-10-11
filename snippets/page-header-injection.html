@@ -1,0 +1,18 @@
+<!-- Media Wall — Homepage → Page Settings → Advanced → Page Header Code Injection -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zsawtelle-lgtm/sqsp-media-wall@1/src/media-wall.css">
+<script>
+  window.MediaWallConfig = {
+    position: 'above-header',  // above-header | inline
+    header: 'sticky',          // sticky | static | keep
+    columns: 3, columnsTablet: 3, columnsMobile: 2,
+    speed: 30,                 // THE speed: px per second for every column
+    direction: 'up',           // column 1; alternate flips every other column
+    alternate: true,
+    videoRate: 1,              // video playback speed (1 = normal)
+    links: false,              // true = tiles open their link
+    linkTarget: 'same',        // same | new
+    scrollIndicator: true,
+    scrollLabel: 'Scroll'
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/gh/zsawtelle-lgtm/sqsp-media-wall@1/src/media-wall.js"></script>
