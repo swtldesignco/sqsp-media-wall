@@ -9,7 +9,7 @@ or inline in its own section.
 - Each tile keeps the **uploaded aspect ratio** (photos and videos)
 - Video: MP4 via a `video:` line or button file link, uploaded Video blocks (HLS), or a `<video>` in a code block
 - Only on-screen videos play; motion stops when the wall is off screen
-- One master speed value; optional video playback speed
+- Step motion (hold, then glide one tile with an eased snap) or continuous drift; optional video playback speed
 - Tile links, off by default
 - Scroll button to the nav + hero
 - Respects reduced-motion; restores the source sections when the editor opens

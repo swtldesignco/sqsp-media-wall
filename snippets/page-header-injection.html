@@ -5,7 +5,11 @@
     position: 'above-header',  // above-header | inline
     header: 'sticky',          // sticky | static | keep
     columns: 3, columnsTablet: 3, columnsMobile: 2,
-    speed: 30,                 // THE speed: px per second for every column
+    motion: 'step',            // step = hold, then glide one tile | continuous = drift
+    stepHold: 1.6,             // step: seconds each column holds
+    stepDuration: 0.7,         // step: glide time (lower = faster)
+    stepStagger: 0.2,          // step: delay between columns
+    speed: 30,                 // continuous: px per second for every column
     direction: 'up',           // column 1; alternate flips every other column
     alternate: true,
     videoRate: 1,              // video playback speed (1 = normal)

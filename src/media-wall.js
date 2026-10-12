@@ -1,5 +1,5 @@
 /*!
- * Media Wall for Squarespace 7.1 — v1.1.0
+ * Media Wall for Squarespace 7.1 — v1.2.0
  * Columns of photos and videos that scroll on their own, in alternating
  * directions, built from native Squarespace content. Can sit above the site
  * header (an intro wall before the nav + hero) or inline in its own section.
@@ -19,7 +19,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.2.0';
 
   var DEFAULTS = {
     anchor: 'media-wall',      // section anchor that marks the source list
@@ -29,7 +29,12 @@
     columns: 3,                // > 1024px
     columnsTablet: 3,          // 641–1024px
     columnsMobile: 2,          // ≤ 640px
-    speed: 30,                 // THE speed: pixels per second, every column
+    motion: 'step',            // step = hold, then glide one tile with an eased snap
+                               // continuous = slow, constant drift
+    stepHold: 1.6,             // step: seconds each column holds still
+    stepDuration: 0.7,         // step: seconds the glide to the next tile takes
+    stepStagger: 0.2,          // step: delay between columns, so they move in a cascade
+    speed: 30,                 // continuous: pixels per second, every column
     speeds: '',                // advanced: per-column multipliers, e.g. "1,0.8,1.15"
     videoRate: 1,              // playback speed of the videos themselves (1 = normal)
     links: false,              // tiles open their link when clicked (off by default)
@@ -379,7 +384,8 @@
       var up = (o.direction !== 'down');
       if (o.alternate && i % 2 === 1) up = !up;
       col.classList.add(up ? 'mw-up' : 'mw-down');
-      self.cols.push({ col: col, track: track, set: set, base: group, up: up, offset: 0, mult: speeds[i] > 0 ? speeds[i] : 1 });
+      self.cols.push({ col: col, track: track, set: set, base: group, up: up, offset: 0, mult: speeds[i] > 0 ? speeds[i] : 1,
+                       next: Math.max(0, parseFloat(o.stepHold) || 0) + i * (parseFloat(o.stepStagger) || 0), anim: null });
     });
     var old = $('.mw-grid', this.root);
     if (old) this.root.replaceChild(grid, old); else this.root.insertBefore(grid, this.root.firstChild);
@@ -455,8 +461,13 @@
       var dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
       last = now;
       if (self.reduced || self.paused || !self.visible) return;
-      var v = Math.max(0, self.o.speed);
-      self.cols.forEach(function (c) { c.offset += v * c.mult * dt; });
+      self.clock = (self.clock || 0) + dt;   // wall's own clock: stops while paused or off screen
+      if (self.o.motion === 'continuous') {
+        var v = Math.max(0, self.o.speed);
+        self.cols.forEach(function (c) { c.offset += v * c.mult * dt; });
+      } else {
+        self.cols.forEach(function (c) { self.step(c); });
+      }
       self.render();
     };
     this.visible = true;
@@ -470,6 +481,37 @@
       this.root.addEventListener('mouseleave', function () { self.paused = false; });
     }
     this._raf = requestAnimationFrame(tick);
+  };
+
+  /* Step motion: hold, then glide to the next tile edge (ease-in-out). */
+  function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+  /* Offsets at which a tile edge sits exactly on the wall's top edge. */
+  Wall.prototype.stops = function (c) {
+    var h = c.set.offsetHeight, top0 = c.set.getBoundingClientRect().top;
+    return Array.prototype.map.call(c.set.children, function (t) {
+      var y = t.getBoundingClientRect().top - top0;
+      return c.up ? y : (h - y) % h;
+    });
+  };
+
+  Wall.prototype.step = function (c) {
+    var o = this.o, now = this.clock;
+    if (c.anim) {
+      var t = Math.min(1, (now - c.anim.t0) / c.anim.dur);
+      c.offset = c.anim.from + c.anim.dist * ease(t);
+      if (t >= 1) { c.anim = null; c.next = now + Math.max(0, parseFloat(o.stepHold) || 0); }
+      return;
+    }
+    if (now < c.next) return;
+    var h = c.set.offsetHeight;
+    if (!h) return;
+    var cur = ((c.offset % h) + h) % h, dist = h;
+    this.stops(c).forEach(function (s) {
+      var d = ((s - cur) % h + h) % h;
+      if (d > 2 && d < dist) dist = d;   // nearest edge ahead (skip the one we sit on)
+    });
+    c.anim = { from: cur, dist: dist, t0: now, dur: Math.max(0.1, parseFloat(o.stepDuration) || 0.7) };
   };
 
   Wall.prototype.setSpeed = function (px) {
@@ -557,13 +599,21 @@
   /* One-place settings in Design → Custom CSS, e.g.
        .mw { --mw-speed: 45; --mw-links: on; }
      Code-block data-* attributes still win over CSS. */
-  var CSS_SETTINGS = [['speed', '--mw-speed'], ['videoRate', '--mw-video-rate'], ['links', '--mw-links'],
+  var CSS_SETTINGS = [['motion', '--mw-motion'], ['stepHold', '--mw-step-hold'], ['stepDuration', '--mw-step-duration'],
+                      ['stepStagger', '--mw-step-stagger'],
+                      ['speed', '--mw-speed'], ['videoRate', '--mw-video-rate'], ['links', '--mw-links'],
                       ['linkTarget', '--mw-link-target'], ['scrollIndicator', '--mw-scroll-indicator'], ['scrollLabel', '--mw-scroll-label']];
-  function applyCssSettings(o, root, data) {
-    var cs = getComputedStyle(root);
+  /* Read from the wall (.mw, or anything above it such as body) and from the
+     source section (#media-wall), so either selector works in Custom CSS. */
+  function applyCssSettings(o, root, data, section) {
+    var styles = [getComputedStyle(root)];
+    if (section) styles.push(getComputedStyle(section));
     CSS_SETTINGS.forEach(function (pair) {
       if (data[pair[0]] !== undefined) return;
-      var v = (cs.getPropertyValue(pair[1]) || '').trim().replace(/^["']|["']$/g, '');
+      var v = '';
+      styles.forEach(function (cs) { if (!v) v = (cs.getPropertyValue(pair[1]) || '').trim().replace(/^["']|["']$/g, ''); });
+      var num = /^(-?[\d.]+)\s*(ms|s|px)?$/.exec(v);   // "1.6s", "600ms", "40px" → number
+      if (num) v = String(num[2] === 'ms' ? parseFloat(num[1]) / 1000 : parseFloat(num[1]));
       if (!v) return;
       var d = DEFAULTS[pair[0]];
       o[pair[0]] = typeof d === 'boolean' ? /^(on|true|yes|1)$/i.test(v) : typeof d === 'number' ? parseFloat(v) : v;
@@ -626,7 +676,7 @@
     root.setAttribute('aria-label', o.label || 'Featured work');
     if (o.pauseOnHover) root.classList.add('mw--pause-hover');
     var above = place(root, o, section);
-    applyCssSettings(o, root, data);
+    applyCssSettings(o, root, data, section);
     if (o.hideSource && (above || list)) hidden.push(above ? section : list);
     addIndicator(root, o);
     if (o.links) root.classList.add('mw--links');
@@ -711,6 +761,7 @@
   window.MediaWall = {
     version: VERSION, init: init, destroy: destroy,
     refresh: function () { destroy(); init(); },
+    settings: function () { return instances.map(function (i) { return i.wall.o; }); },
     setSpeed: function (px) { instances.forEach(function (i) { i.wall.setSpeed(px); }); },
     setVideoRate: function (r) { instances.forEach(function (i) { i.wall.setVideoRate(r); }); }
   };

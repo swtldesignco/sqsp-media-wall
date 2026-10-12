@@ -1,7 +1,7 @@
 # Media Wall
 
 Auto-scrolling 3-column photo + video wall, built from native Squarespace content.
-Repo: <https://github.com/zsawtelle-lgtm/sqsp-media-wall> · Version **1.1.0** · Status: **beta: tested on a mock 7.1 page only**
+Repo: <https://github.com/zsawtelle-lgtm/sqsp-media-wall> · Version **1.2.0** · Status: **beta: tested on a mock 7.1 page only**
 
 ---
 
@@ -16,7 +16,9 @@ Repo: <https://github.com/zsawtelle-lgtm/sqsp-media-wall> · Version **1.1.0** �
   and the nav + hero come up as the visitor scrolls.
 - Only videos on screen play. All motion stops when the wall is off screen.
 - Visitors with "reduce motion" turned on see a still wall.
-- One master **speed** value for the whole wall; optional video playback speed.
+- Two motion styles: **step** (default: each column holds, then glides one tile with an
+  eased snap, in a cascade) or **continuous** (slow constant drift, one master speed).
+- Optional video playback speed.
 - Tile **links are off by default**; one switch turns them on.
 - A **Scroll** button at the bottom of the wall takes visitors to the nav + hero,
   and fades out once they start scrolling.
@@ -35,7 +37,11 @@ Homepage → ⚙ Page Settings → Advanced → **Page Header Code Injection**. 
     position: 'above-header',
     header: 'sticky',
     columns: 3, columnsTablet: 3, columnsMobile: 2,
-    speed: 30,
+    motion: 'step',        // step | continuous
+    stepHold: 1.6,         // step: seconds each column holds still
+    stepDuration: 0.7,     // step: seconds the glide takes (lower = faster)
+    stepStagger: 0.2,      // step: delay between columns
+    speed: 30,             // continuous: px per second
     direction: 'up',
     alternate: true,
     videoRate: 1,
@@ -116,7 +122,11 @@ Priority, lowest to highest: plugin defaults → `window.MediaWallConfig` →
 | `columns` | `data-columns` | `3` | number | Columns above 1024px |
 | `columnsTablet` | `data-columns-tablet` | `3` | number | Columns 641–1024px |
 | `columnsMobile` | `data-columns-mobile` | `2` | number | Columns ≤640px |
-| `speed` | `data-speed` | `30` | px per second | **The** speed for the whole wall. 20 = slow drift, 30 = video reference, 60 = brisk |
+| `motion` | `data-motion` | `step` | `step` `continuous` | Step = hold, then glide one tile and snap to its edge. Continuous = constant drift |
+| `stepHold` | `data-step-hold` | `1.6` | seconds | Step: time each column holds still |
+| `stepDuration` | `data-step-duration` | `0.7` | seconds | Step: glide time. Lower = faster move |
+| `stepStagger` | `data-step-stagger` | `0.2` | seconds | Step: delay between columns (cascade). `0` = all move together |
+| `speed` | `data-speed` | `30` | px per second | Continuous: speed for the whole wall. 20 = slow drift, 30 = video reference, 60 = brisk |
 | `speeds` | `data-speeds` | — | e.g. `1,0.8,1.15` | Advanced, leave empty: per-column multipliers of `speed` |
 | `videoRate` | `data-video-rate` | `1` | `0.5`–`2` | Playback speed of the videos themselves (1 = normal) |
 | `links` | `data-links` | `false` | `true` `false` | Tiles open their link when clicked. Off = nothing on the wall is clickable |
@@ -138,9 +148,16 @@ Priority, lowest to highest: plugin defaults → `window.MediaWallConfig` →
 These settings can also live in **Design → Custom CSS**, so the speed and link switch
 sit with the rest of the wall's styling. Code-block `data-*` attributes still win.
 
+Use the selector `.mw` or the source section's anchor `#media-wall`. Times can be
+written `1.6`, `1.6s` or `1600ms`.
+
 ```css
 .mw {
-  --mw-speed: 30;          /* px per second */
+  --mw-motion: step;       /* step | continuous */
+  --mw-step-hold: 1.6s;
+  --mw-step-duration: 0.7s;
+  --mw-step-stagger: 0.2s;
+  --mw-speed: 30;          /* continuous only: px per second */
   --mw-video-rate: 1;      /* video playback speed */
   --mw-links: off;         /* on | off */
   --mw-link-target: same;  /* same | new */
@@ -215,15 +232,21 @@ Events and functions:
 | `mw:ready` (event, bubbles) | `detail: { id, items, options }` |
 | `MediaWall.refresh()` | Rebuild every wall |
 | `MediaWall.destroy()` / `init()` | Remove / build |
-| `MediaWall.setSpeed(px)` | Change the speed live (handy for tuning in the console) |
+| `MediaWall.settings()` | The settings each wall is actually using (check that Custom CSS was read) |
+| `MediaWall.setSpeed(px)` | Change the continuous speed live (handy for tuning in the console) |
 | `MediaWall.setVideoRate(r)` | Change video playback speed live |
-| `MediaWall.version` | `1.1.0` |
+| `MediaWall.version` | `1.2.0` |
 
 ---
 
 # Part 4 — Support
 
 ## Troubleshooting
+
+- **Custom CSS setting has no effect:** run `MediaWall.settings()` in the browser
+  console on the live page. If the value is not there, check the selector is `.mw` or
+  `#media-wall`, and that a code-block `data-*` attribute is not setting the same value.
+  Continuous settings (`--mw-speed`) do nothing while `motion` is `step`.
 
 - **Wall doesn't show:** check the anchor is exactly `media-wall`, and you are on the
   live site, not the editor.
@@ -240,7 +263,7 @@ Events and functions:
 ## Deployed on
 
 - Mock 7.1 page only (`demo/index.html`).
-- Next: swtldesignco.com staging test page.
+- swtldesignco.com staging test page (v1.1.1, Oct 2026).
 
 ## Open items
 

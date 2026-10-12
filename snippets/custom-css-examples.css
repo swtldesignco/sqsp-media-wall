@@ -4,7 +4,11 @@
 
 /* XX.1 Behaviour — one place for speed, links and the scroll button */
 .mw {
-  --mw-speed: 30;            /* px per second */
+  --mw-motion: step;         /* step | continuous */
+  --mw-step-hold: 1.6s;      /* step: hold time */
+  --mw-step-duration: 0.7s;  /* step: glide time (lower = faster) */
+  --mw-step-stagger: 0.2s;   /* step: delay between columns */
+  --mw-speed: 30;            /* continuous: px per second */
   --mw-video-rate: 1;        /* video playback speed */
   --mw-links: off;           /* on | off */
   --mw-scroll-indicator: on; /* on | off */
