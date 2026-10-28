@@ -1,7 +1,7 @@
 # Media Wall
 
 Auto-scrolling 3-column photo + video wall, built from native Squarespace content.
-Repo: <https://github.com/zsawtelle-lgtm/sqsp-media-wall> · Version **1.2.0** · Status: **beta: tested on a mock 7.1 page only**
+Repo: <https://github.com/swtldesignco/sqsp-media-wall> · Version **1.2.0** · Status: **beta: tested on a mock 7.1 page only**
 
 ---
 
@@ -31,7 +31,7 @@ Homepage → ⚙ Page Settings → Advanced → **Page Header Code Injection**. 
 [`snippets/page-header-injection.html`](../snippets/page-header-injection.html):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/zsawtelle-lgtm/sqsp-media-wall@1/src/media-wall.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/swtldesignco/sqsp-media-wall@1/src/media-wall.css">
 <script>
   window.MediaWallConfig = {
     position: 'above-header',
@@ -50,7 +50,7 @@ Homepage → ⚙ Page Settings → Advanced → **Page Header Code Injection**. 
     scrollLabel: 'Scroll'
   };
 </script>
-<script defer src="https://cdn.jsdelivr.net/gh/zsawtelle-lgtm/sqsp-media-wall@1/src/media-wall.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/swtldesignco/sqsp-media-wall@1/src/media-wall.js"></script>
 ```
 
 Why page injection, not the sitewide footer: the wall moves the site header, so it

@@ -14,7 +14,7 @@
  *        gallery sections, image blocks, gallery blocks, video blocks
  *        (uploaded Squarespace video) and code blocks holding a <video>.
  *
- * Repo: github.com/zsawtelle-lgtm/sqsp-media-wall
+ * Repo: github.com/swtldesignco/sqsp-media-wall
  */
 (function () {
   'use strict';
